@@ -24,7 +24,17 @@ completion date: 2021-10-16
     + [Comparison Math operators](#comparison-math-operators)
     + [Compound WHERE](#compound-where)
 
-[2. Tables](#2-tables)
+[2. Data Types](#2-data-types)
+  + [most used types:](#most-used)
+    + [Numbers](#numbers)
+    + [Character](#character)
+    + [Boolean](#boolean)
+    + [Date](#date)
+    + [Time](#time)
+    + [Interval](#interval)
+  + [other](#other)
+
+[3. Tables](#3-tables)
 + [Primary keys](#primary-keys)
 + [Auto-generated ID](#auto-generated-id)
 + [Foreign keys](#foreign-keys)
@@ -33,29 +43,29 @@ completion date: 2021-10-16
   + [constraints on deleting](#constraints-on-deleting)
 
 
-[3. Joins](#3-joins)
+[4. Joins](#4-joins)
   + [types of joins](#types-of-joins)
     + [inner join (JOIN)](#inner-join-join)
     + [left outer join (LEFT JOIN)](#left-outer-join-left-join)
     + [right outer join (RIGHT JOIN)](#right-outer-join-right-join)
     + [full join (FULL JOIN)](#full-join-full-join)
 
-[4. Aggregation](#4-aggregation)
+[5. Aggregation](#5-aggregation)
   + [Aggregates](#aggregates)
   + [Grouping (GROUP BY)](#grouping-group-by)
   + [GROUP BY and Aggregates combined](#group-by-and-aggregates-combined)
   + [Filtering GROUP BY with HAVING](#filtering-group-by-with-having)
 
-[5. Sorting (ORDER BY)](#5-sorting-order-by)
+[6. Sorting (ORDER BY)](#6-sorting-order-by)
   + [multi sort criteria](#multi-sort-criteria)
   + [LIMIT and OFFSET](#limit-and-offset)
 
-[6. Unions, Intersect, Except](#6-union-union-all-intersect-intersect-all-except-except-all)
+[7. Unions, Intersect, Except](#7-union-union-all-intersect-intersect-all-except-except-all)
   + [Union](#union)
   + [Intersect](#intersect)
   + [Except](#except)
 
-[7. Subqueries](#7-subqueries)
+[8. Subqueries](#8-subqueries)
   + [Subqueries in SELECT](#subqueries-in-select)
   + [Subqueries in FROM](#subqueries-in-from)
   + [Subqueries in JOIN](#subqueries-in-join)
@@ -65,15 +75,15 @@ completion date: 2021-10-16
   + [Correlated Subqueries](#correlated-subqueries)
   + [Select without a FROM](#select-without-a-from)
   
-[8. Destinct](#8-destinct)
+[9. Destinct](#9-destinct)
 
-[9. Utility Operators, Keywords, and Functions](#9-utility-operators-keywords-and-functions)
+[10. Utility Operators, Keywords, and Functions](#10-utility-operators-keywords-and-functions)
   + [GREATEST](#greatest)
   + [LEAST](#least)
   + [CASE](#case)
 
 ---
-[10. PostgreSQL](#10-postgresql)
+[11. PostgreSQL](#10-postgresql)
   + [Installation](#installation)
 
 ---
@@ -265,7 +275,92 @@ area NOT IN (3043,8900) OR name = 'Delhi' OR name = 'Tokyo';
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 2. Tables
+## 2. Data types
+#### most used:
+##### Numbers
+  * Numbers without any decimal points: (smallint, integer, bigint)
+  * No decimal point, auto increment: (smallserial, serial, bigserial)
+  * Number with decimal points: (decimal, numeric, real, double precision, float)
+
+  (RULES):
+  * SERIAL - id column on any table
+  * INTEGER - store number without decimal
+  * NUMERIC - store number with decimal - data needs to be accurate (bank balance, scientific calculations)
+  * DOUBLE PRECISION - store number with decimal - data doesnt need to be accurate (floating point math - eg. calculations result in something like 1.001358e-05)
+
+##### Character
+No performance benefits between types
+
+  * CHAR(4) - store some characters, length will always be 4 even if postgres has to add spaces
+  * VARCHAR(40) - store a string up to 40 chars, automatically remove extra chars
+  * VARCHAR - store any length of string
+  * TEXT - Store any lenght of string
+
+##### Boolean
+  * TRUE ('true', 'yes', 'on', 1, 't', 'y')
+  * FALSE ('false', 'no', 'off', 0, 'f', 'n')
+  * NULL (null)
+
+##### Date
+Can provide string in almost any format and postgres will do conversion
+can specify something to be date by explicitly giving a data type with '::DATE'
+
+```SQL
+SELECT('NOV 20 1980'::DATE);
+```
+  * 1980-11-20 -> 1980-11-20
+  * NOV-20-1980 -> 1980-11-20
+  * 20-Nov-1980 -> 1980-11-20
+  * 1980-November-20 -> 1980-11-20
+  * November 20, 1980 -> 1980-11-20
+
+##### Time
+
+  * TIME or TIME WITHOUT TIME ZONE
+  * TIME WITH TIME ZONE (converts to UCT time)
+  * TIMESTAMP WITH TIME ZONE
+  
+```SQL
+  SELECT('01:23 AM'::TIME)
+  --13:23:00
+
+  SELECT('01:23 AM EST'::TIME WITH TIME ZONE)
+  --converted to 01:23-05:00 (the -05 means 5 hours behind UCT time)
+
+  SELECT('Nov-20-1980 05:23PM PST'::TIMESTAMP WITH TIME ZONE)
+  --converted to 1980-11-20 02:23:00-07 (date, time, UCT offset)
+
+```
+
+##### Interval
+Can do math calculations on intervals.
+Can mix INTERVAL with other TIME types.
+Think of interval as a duration of time
+  * 1 day
+  * 1 D
+  * 1 D 1 M 1 S
+
+
+```SQL
+SELECT ('1 D 20 H 30 M 45 S'::INTERVAL) - ('1 D'::INTERVAL)
+  --result is 20:30:45
+```
+
+
+#### other: 
+* Currency
+* arrays
+* geometric
+* range
+* xml
+* binary
+* json
+* UUID
+
+---
+###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
+
+## 3. Tables
 * schema diagrams help show relationship between tables and their records 
 
 relationships between tables 
@@ -355,7 +450,7 @@ CREATE TABLE photos (
 ```
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
-## 3. Joins
+## 4. Joins
 * Produces values by <b>merging together rows</b> from different <b>related</b> tables.
 * Joins are used to find data from multiple sources.
 
@@ -511,7 +606,7 @@ JOIN users ON users.id = comments.user_id AND users.id = photos.user_id;
 
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
-## 4. Aggregation
+## 5. Aggregation
 The formation of a number of things into a cluster.
 2 ways we can group data:
 
@@ -612,7 +707,7 @@ GROUP BY paid;
 
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
-## 5. Sorting (ORDER BY) 
+## 6. Sorting (ORDER BY) 
 
 Reordering records based on some value.
 SQL syntax: 'ORDER BY'.
@@ -665,7 +760,7 @@ OFFSET 1;
 
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 6. UNION / UNION ALL / INTERSECT / INTERSECT ALL / EXCEPT / EXCEPT ALL
+## 7. UNION / UNION ALL / INTERSECT / INTERSECT ALL / EXCEPT / EXCEPT ALL
 
 ```SQL
 UNION           --join together the results of two queries. remove duplicate rows
@@ -730,7 +825,7 @@ LIMIT 4
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 7. Subqueries
+## 8. Subqueries
 Subqueries allow you to simplify SQL queries by breaking up a query into smaller parts.
 Basically subqueries allow merging of multiple queries together.
 Subqueries can appear at different locations in a SQL query statement (eg. SELECT, FROM, JOIN, WHERE etc)
@@ -984,7 +1079,7 @@ SELECT
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 8. Destinct
+## 9. Destinct
 SQL keyword: DESTINCT
 Will always be inside 'SELECT'
 Gives all unique values inside a column.
@@ -1009,7 +1104,7 @@ FROM products;
 
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 9. Utility Operators, Keywords, and Functions
+## 10. Utility Operators, Keywords, and Functions
 
 #### GREATEST
 selecting greatest value out of a list of values
@@ -1051,7 +1146,7 @@ FROM products;
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 10. PostgreSQL 
+## 11. PostgreSQL 
 * Installing postgreSQL installs pgadmin.
 * Pgadmin is a web-based tool to manage and inspect a postgres database.
 * One postgres server can have multiple databases.
@@ -1066,84 +1161,3 @@ FROM products;
 * run pgAdmin 4 -> password is to access pgadmin
 * clicking on servers -> requested password is password for localmachine.
 
-### Data types Categories
-#### most used:
-##### Numbers
-  * Numbers without any decimal points: (smallint, integer, bigint)
-  * No decimal point, auto increment: (smallserial, serial, bigserial)
-  * Number with decimal points: (decimal, numeric, real, double precision, float)
-
-  (RULES):
-  * SERIAL - id column on any table
-  * INTEGER - store number without decimal
-  * NUMERIC - store number with decimal - data needs to be accurate (bank balance, scientific calculations)
-  * DOUBLE PRECISION - store number with decimal - data doesnt need to be accurate (floating point math - eg. calculations result in something like 1.001358e-05)
-
-##### Character
-No performance benefits between types
-
-  * CHAR(4) - store some characters, length will always be 4 even if postgres has to add spaces
-  * VARCHAR(40) - store a string up to 40 chars, automatically remove extra chars
-  * VARCHAR - store any length of string
-  * TEXT - Store any lenght of string
-
-##### Boolean
-  * TRUE ('true', 'yes', 'on', 1, 't', 'y')
-  * FALSE ('false', 'no', 'off', 0, 'f', 'n')
-  * NULL (null)
-
-##### Date
-Can provide string in almost any format and postgres will do conversion
-can specify something to be date by explicitly giving a data type with '::DATE'
-
-```SQL
-SELECT('NOV 20 1980'::DATE);
-```
-  * 1980-11-20 -> 1980-11-20
-  * NOV-20-1980 -> 1980-11-20
-  * 20-Nov-1980 -> 1980-11-20
-  * 1980-November-20 -> 1980-11-20
-  * November 20, 1980 -> 1980-11-20
-
-##### Time
-
-  * TIME or TIME WITHOUT TIME ZONE
-  * TIME WITH TIME ZONE (converts to UCT time)
-  * TIMESTAMP WITH TIME ZONE
-  
-```SQL
-  SELECT('01:23 AM'::TIME)
-  --13:23:00
-
-  SELECT('01:23 AM EST'::TIME WITH TIME ZONE)
-  --converted to 01:23-05:00 (the -05 means 5 hours behind UCT time)
-
-  SELECT('Nov-20-1980 05:23PM PST'::TIMESTAMP WITH TIME ZONE)
-  --converted to 1980-11-20 02:23:00-07 (date, time, UCT offset)
-
-```
-
-##### Interval
-Can do math calculations on intervals.
-Can mix INTERVAL with other TIME types.
-Think of interval as a duration of time
-  * 1 day
-  * 1 D
-  * 1 D 1 M 1 S
-
-
-```SQL
-SELECT ('1 D 20 H 30 M 45 S'::INTERVAL) - ('1 D'::INTERVAL)
-  --result is 20:30:45
-```
-
-
-#### other: 
-* Currency
-* arrays
-* geometric
-* range
-* xml
-* binary
-* json
-* UUID
