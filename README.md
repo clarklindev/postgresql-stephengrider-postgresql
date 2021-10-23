@@ -61,9 +61,9 @@ completion date: 2021-10-16
   + [LIMIT and OFFSET](#limit-and-offset)
 
 [7. Unions, Intersect, Except](#7-union-union-all-intersect-intersect-all-except-except-all)
-  + [Union](#union)
-  + [Intersect](#intersect)
-  + [Except](#except)
+  + [UNION](#union)
+  + [INTERSECT](#intersect)
+  + [EXCEPT](#except)
 
 [8. Subqueries](#8-subqueries)
   + [Subqueries in SELECT](#subqueries-in-select)
@@ -75,7 +75,7 @@ completion date: 2021-10-16
   + [Correlated Subqueries](#correlated-subqueries)
   + [Select without a FROM](#select-without-a-from)
   
-[9. Destinct](#9-destinct)
+[9. DESTINCT](#9-destinct)
 
 [10. Utility Operators, Keywords, and Functions](#10-utility-operators-keywords-and-functions)
   + [GREATEST](#greatest)
@@ -92,9 +92,11 @@ completion date: 2021-10-16
       + [multi-column check](#multi-column-check)
   + [remove a constraint](#remove-a-constraint)
 
-
 ---
-[12. PostgreSQL](#12-postgresql)
+[12. Database Design](#12-database-design)
+  + [Schema designers](#schema-designers)
+
+[13. PostgreSQL](#13-postgresql)
   + [Installation](#installation)
 
 
@@ -1310,11 +1312,52 @@ DROP CONSTRAINT products_name_key;
 to visually check that this updated, you have to refresh:
 right-click products table -> refresh
 
+---
+###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
+
+## 12. Database design
+
+### schema designers
+help you structure database tables and columns, data types
+shows the relationship between tables.
+
+##### code-based
+benefits include allowing you to commit diagram code to repository
+
+  * [dbdiagram.io](http://dbdiagram.io)
+
+```sample code
+
+Table users{
+  id integer [pk, increment]
+  username varchar
+}
+
+Table comments {
+  id integer [pk, increment]
+  contents varchar
+  user_id int [ref: > users.id]
+  post_id int [ref: > posts.id]
+}
+
+Table post {
+  id integer [pk, increment]
+  title varchar
+}
+
+```
+
+  * [quickdatabasediagrams.com](quickdatabasediagrams.com)
+
+##### diagram based
+  * [ondras.zarovi.cz/sql/demo](ondras.zarovi.cz/sql/demo)
+  * [drawsql.app](http://drawsql.app)
+  * [sqldbm.com](sqldbm.com)
 
 ---
 ###### <div style="text-align:right">[table of contents](#table-of-contents)</div>
 
-## 12. PostgreSQL 
+## 13. PostgreSQL 
 * Installing postgreSQL installs pgadmin.
 * Pgadmin is a web-based tool to manage and inspect a postgres database.
 * One postgres server can have multiple databases.
