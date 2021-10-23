@@ -13,7 +13,7 @@ completion date: 2021-10-16
 ---
 ## Table of contents
 
-  + [1. SQL](https://github.com/swagfinger/sql_postgreSQL/blob/master/01. SQL.md)
-  + [2. database design](https://github.com/swagfinger/sql_postgreSQL/blob/master/02. database_design.md)
-  + [3. postgreSQL](https://github.com/swagfinger/sql_postgreSQL/blob/master/03. postgreSQL.md)
+  + [1. SQL](https://github.com/swagfinger/sql_postgreSQL/blob/master/01.SQL.md)
+  + [2. database design](https://github.com/swagfinger/sql_postgreSQL/blob/master/02.database_design.md)
+  + [3. postgreSQL](https://github.com/swagfinger/sql_postgreSQL/blob/master/03.postgreSQL.md)
 
