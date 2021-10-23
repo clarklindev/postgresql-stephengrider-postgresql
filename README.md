@@ -83,7 +83,7 @@ completion date: 2021-10-16
   + [CASE](#case)
 
 ---
-[11. PostgreSQL](#10-postgresql)
+[11. PostgreSQL](#11-postgresql)
   + [Installation](#installation)
 
 ---
