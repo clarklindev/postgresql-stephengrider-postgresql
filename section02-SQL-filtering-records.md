@@ -51,6 +51,18 @@ WHERE
 area BETWEEN 2000 AND 4000;
 ```
 
+<!-- where name is Delphi OR shanghai -->
+
+```SQL
+SELECT name, area
+FROM cities
+WHERE
+name IN ('Delphi', 'Shanghai');
+
+```
+
+<!-- Compound check - NOT... AND has a name of ...  -->
+
 ```SQL
 SELECT name, area
 FROM cities
@@ -68,3 +80,47 @@ area NOT IN (3043,8900) OR name = 'Delhi' OR name = 'Tokyo';
 ```
 
 ---
+
+- Write a query that will print the name and total_revenue of all phones with a total_revenue greater than 1,000,000
+
+```SQL
+SELECT name, price * units_sold AS total_revenue FROM phones
+WHERE price * units_sold > 1000000
+```
+
+## Updating Rows
+
+```sql
+UPDATE cities SET population = 399000000 WHERE name = 'Tokyo'
+```
+
+## Deleing Rows
+
+```sql
+DELETE FROM cities WHERE name = "Tokyo"
+```
+
+## UPDATE exercise
+
+-- Write query here to update the 'units_sold' of the phone with name 'N8' to 8543
+
+```sql
+UPDATE phones SET units_sold = 8543 WHERE name = 'N8';
+```
+
+-- Write query here to select all rows and columns of the 'phones' table
+
+```sql
+SELECT * from phones;
+```
+
+## DELETE exercise
+
+```sql
+-- Write your delete SQL here
+DELETE FROM phones
+WHERE manufacturer = 'Samsung';
+
+-- Write query here to select all rows and columns from phones
+SELECT * from phones;
+```
